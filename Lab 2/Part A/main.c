@@ -39,13 +39,19 @@ bool checkSWStatus() // return true if switch is pressed
 
 void cycleLED()
 {
+   static bool stopRepeat = false;
    static uint8_t counter = 0x00;
-   if (checkSWStatus())
+   if (checkSWStatus() && !stopRepeat)
    {
+       stopRepeat = true;
        P2->OUT = counter;
        if(counter==0x7)
            counter = 0;
        counter ++;
+   }
+   else if(!checkSWStatus() && stopRepeat)
+   {
+       stopRepeat = false;
    }
 }
 void main(void)

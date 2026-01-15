@@ -18,27 +18,27 @@
 
 void MvtLED_Init(){
     // Front and back LEDS on port 8 0b1110001 or 0x71 back leds are 0x10 and 0x01 while front are 0x20 and 0x40
-    P8 ->SEL1 &= ~0x71; // First function select 0
-    P8 ->SEL0 &= ~0x71; // Second function select 1
-    P8 ->DIR |= 0x71; // Direction output
+    P8 ->SEL1 &= ~0xE1; // First function select 0
+    P8 ->SEL0 &= ~0xE1; // Second function select 1
+    P8 ->DIR |= 0xE1; // Direction output
 }
 
 // Turn on white light and chasis front lights
 void Front_Lights_ON(){
-   P8->OUT |= 0x60;
+   P8->OUT |= 0x21;
 }
 
 // Switch off BGR and chasis front lights
 void Front_Lights_OFF(){
-   P8->OUT &= ~0x60;
+   P8->OUT &= ~0x21;
 }
 
 // Turn on back lights
 void Back_Lights_ON(){
-   P8->OUT |= 0x11;
+   P8->OUT |= 0xC0;
 }
 
 // Turn off back lights
 void Back_Lights_OFF(){
-    P8->OUT &= ~0x11;
+    P8->OUT &= ~0xC0;
 }
