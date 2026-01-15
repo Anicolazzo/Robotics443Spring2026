@@ -1,7 +1,7 @@
 # FIXED
 
 main.obj: ../main.c
-main.obj: C:/Users/Fives/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h
+main.obj: C:/Users/anicolazzo/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h
 main.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/msp.h
 main.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/msp432p401r.h
 main.obj: C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
@@ -24,7 +24,7 @@ main.obj: ../Clock.h
 
 ../main.c:
 
-C:/Users/Fives/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h:
+C:/Users/anicolazzo/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h:
 
 C:/ti/ccs1281/ccs/ccs_base/arm/include/msp.h:
 

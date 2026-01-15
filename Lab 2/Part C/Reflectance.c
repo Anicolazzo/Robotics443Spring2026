@@ -106,12 +106,15 @@ uint8_t result;
     P7 ->OUT |= 0xFF;
     Clock_Delay1us(10);
     // Port 7 as Input
+    //P7 ->OUT &= ~0xFF;
     P7 ->DIR &= ~0xFF;
+//    P7->REN |= 0xFF;
     Clock_Delay1us(time);
     result = P7->IN;
-    // Write outputs to ports (turn on the leds)
     P5 ->OUT &= ~0x08;
     P9 ->OUT &= ~0x04;
+    // Write outputs to ports (turn on the leds)
+    printf("Raw Result %d\n", result);
     return result;
 }
 

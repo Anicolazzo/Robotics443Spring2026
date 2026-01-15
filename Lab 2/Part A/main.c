@@ -31,6 +31,9 @@ void initOnboardLED()
 
 bool checkSWStatus() // return true if switch is pressed
 {
+//    printf("Button reg status = %d\n", P1->IN);
+//    printf("Expected Output %d \n", (P1->IN & 0x12));
+//    printf("1 = true 0 = false Status: %d \n", ((P1->IN & 0x12) == 0x00) ? 1: 0 );
     return (P1->IN & 0x12) == 0x00; // Pull down switches 0 means pressed
 }
 
@@ -42,6 +45,7 @@ void cycleLED()
        P2->OUT = counter;
        if(counter==0x7)
            counter = 0;
+       counter ++;
    }
 }
 void main(void)
@@ -49,6 +53,7 @@ void main(void)
     Clock_Init48MHz();
     initSwitches();
     initOnboardLED();
+    P2->OUT = 0b111;
     while(1)
     {
         cycleLED();

@@ -22,6 +22,7 @@ void main(void)
 	Time = 1000;
 	while (1){
 	    data = Reflectance_Read(Time);
+	    printf("Data status %d\n", data);
 	    Clock_Delay1ms(500);
 	}
 }

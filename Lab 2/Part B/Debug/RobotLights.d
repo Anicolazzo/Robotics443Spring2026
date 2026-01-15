@@ -1,7 +1,7 @@
 # FIXED
 
 RobotLights.obj: ../RobotLights.c
-RobotLights.obj: C:/Users/Fives/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h
+RobotLights.obj: C:/Users/anicolazzo/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h
 RobotLights.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/msp.h
 RobotLights.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/msp432p401r.h
 RobotLights.obj: C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdint.h
@@ -23,7 +23,7 @@ RobotLights.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/system_msp432p401r.h
 
 ../RobotLights.c:
 
-C:/Users/Fives/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h:
+C:/Users/anicolazzo/Documents/GitHub/Robotics443Spring2026/Lab\ 2/Part\ B/RobotLights.h:
 
 C:/ti/ccs1281/ccs/ccs_base/arm/include/msp.h:
 
