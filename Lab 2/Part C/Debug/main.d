@@ -21,6 +21,8 @@ main.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 main.obj: C:/ti/ccs1281/ccs/ccs_base/arm/include/system_msp432p401r.h
 main.obj: ../Clock.h
 main.obj: ../Reflectance.h
+main.obj: C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdio.h
+main.obj: C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h
 
 ../main.c:
 
@@ -63,4 +65,8 @@ C:/ti/ccs1281/ccs/ccs_base/arm/include/system_msp432p401r.h:
 ../Clock.h:
 
 ../Reflectance.h:
+
+C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdio.h:
+
+C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/stdarg.h:
 

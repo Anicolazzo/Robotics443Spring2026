@@ -1,6 +1,7 @@
 #include "msp.h"
 #include "Clock.h"
 #include "Reflectance.h"
+#include <stdio.h>
 /* This project initializes the line sensor pins, activates the line sensor
  * and reads the pins to verify the status of the line sensor
  * Author: John Tadrous
@@ -22,7 +23,7 @@ void main(void)
 	Time = 1000;
 	while (1){
 	    data = Reflectance_Read(Time);
-	    printf("Data status %d\n", data);
+	    printf("Data status 0x%X\n", data);
 	    Clock_Delay1ms(500);
 	}
 }
