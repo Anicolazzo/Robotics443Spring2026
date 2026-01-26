@@ -34,7 +34,7 @@ bool checkSWStatus() // return true if switch is pressed
 //    printf("Button reg status = %d\n", P1->IN);
 //    printf("Expected Output %d \n", (P1->IN & 0x12));
 //    printf("1 = true 0 = false Status: %d \n", ((P1->IN & 0x12) == 0x00) ? 1: 0 );
-    return (P1->IN & 0x12) == 0x00; // Pull down switches 0 means pressed
+    return (P1->IN & 0x10) == 0x00; // Pull down switches 0 means pressed
 }
 
 void cycleLED()
