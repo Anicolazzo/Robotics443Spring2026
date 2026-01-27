@@ -21,16 +21,21 @@ void MvtLED_Init(){
     P8 ->SEL1 &= ~0xE1; // First function select 0
     P8 ->SEL0 &= ~0xE1; // Second function select 1
     P8 ->DIR |= 0xE1; // Direction output
+    P2 ->SEL1 &= ~0x07;
+    P2 ->SEL0 &= ~0x07;
+    P2 ->DIR |= 0x07; // Direction Output
 }
 
 // Turn on white light and chasis front lights
 void Front_Lights_ON(){
    P8->OUT |= 0x21;
+   P2->OUT |= 0x07;
 }
 
 // Switch off BGR and chasis front lights
 void Front_Lights_OFF(){
    P8->OUT &= ~0x21;
+   P2->OUT &= ~0x07;
 }
 
 // Turn on back lights
