@@ -95,6 +95,7 @@ void Motor_Init(void)
 void Motor_Stop(void)
 {
     // write this as part of Lab 3
+    Front_Lights_OFF();
     P3->OUT &= ~0xC0;
     PWM_Duty3(0);
     PWM_Duty4(0);
@@ -111,6 +112,7 @@ void Motor_Stop(void)
 void Motor_Forward(uint16_t leftDuty, uint16_t rightDuty)
 {
     // write this as part of Lab 3
+    Front_Lights_ON();
     P3->OUT |= 0xC0;
     P5->OUT &= ~0x30;
     PWM_Duty3(rightDuty);
@@ -162,6 +164,7 @@ void Motor_Left(uint16_t leftDuty, uint16_t rightDuty)
 void Motor_Backward(uint16_t leftDuty, uint16_t rightDuty)
 {
     // write this as part of Lab 3
+
     P3->OUT |= 0xC0;
     P5->OUT |= 0x30;
     PWM_Duty3(rightDuty);
