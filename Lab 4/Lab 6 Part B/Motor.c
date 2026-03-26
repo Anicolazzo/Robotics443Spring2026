@@ -128,7 +128,7 @@ void Motor_Forward(uint16_t leftDuty, uint16_t rightDuty)
 //        rightDuty duty cycle of right wheel (0 to 14,998)
 // Output: none
 // Assumes: Motor_Init() has been called
-void Motor_Right(uint16_t leftDuty, uint16_t rightDuty)
+void Motor_Left(uint16_t leftDuty, uint16_t rightDuty)
 {
     // write this as part of Lab 3
     Back_Lights_OFF();
@@ -146,7 +146,7 @@ void Motor_Right(uint16_t leftDuty, uint16_t rightDuty)
 //        rightDuty duty cycle of right wheel (0 to 14,998)
 // Output: none
 // Assumes: Motor_Init() has been called
-void Motor_Left(uint16_t leftDuty, uint16_t rightDuty)
+void Motor_Right(uint16_t leftDuty, uint16_t rightDuty)
 {
     // write this as part of Lab 3
     Back_Lights_OFF();

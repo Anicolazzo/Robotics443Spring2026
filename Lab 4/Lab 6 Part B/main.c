@@ -10,10 +10,9 @@
  * main.c
  */
 // FOR ANYONE WHO SEES THIS EVERYTHING IS BACKWARDS ITS ALL INVERTED RIGHT IS LEFT AND LEFT IS RIGHT YOU  HAVE BEEN WARNED
-
 #define colisionDetectCenter 10300
-#define colisionDetectRight 11000
-#define colisionDetectLeft 10400
+#define  colisionDetectLeft 11000
+#define  colisionDetectRight 10400
 
 void main(void)
 {
@@ -25,47 +24,36 @@ void main(void)
     Reflectance_Init();
     ADC0_InitSWTriggerCh17_14_16();
     uint32_t left, right, center;
-    Motor_Forward(2500, 2500);
+    //Motor_Forward(2500, 2500);
     while (1)
     {
-        ADC_In17_14_16(&left, &center, &right);
+        ADC_In17_14_16(&right, &center, &left);
         Clock_Delay1ms(100);
-        if (left >= colisionDetectLeft && right >= colisionDetectRight)
+        if(center > 9000 && center <13000)
         {
-            // turn around
-            Motor_Stop();
-            Motor_Left(2500, 2500);
-            Clock_Delay1ms(2500);
             Motor_Stop();
         }
-        else if (right >= colisionDetectRight)
+        else if(center > 13000)
         {
-            Motor_Left(2500, 2500);
-            Clock_Delay1ms(1700);
-            Motor_Stop();
+            Motor_Backward(2500, 2500);
         }
-        else if (left >= colisionDetectLeft)
+        else if (right >= colisionDetectRight-5000 )
         {
             Motor_Right(2500, 2500);
-            Clock_Delay1ms(1700);
-            Motor_Stop();
         }
-        else if (center >= colisionDetectCenter)
+        else if (left >= colisionDetectLeft-5000 )
         {
-            // back up for half a second
-            Motor_Stop();
-            Motor_Backward(2500, 2500);
-            Clock_Delay1ms(500);
-            Motor_Stop();
             Motor_Left(2500, 2500);
-            Clock_Delay1ms(2500);
-            Motor_Stop();
+        }
+        else if (center >= colisionDetectCenter-5000)
+        {
+            Motor_Forward(2500, 2500);
             // Turn to the right
         }
         else
         {
-            Motor_Forward(2500, 2500);
+            Motor_Stop();
         }
-        Clock_Delay1ms(100);
+        Clock_Delay1ms(1);
     }
 }
