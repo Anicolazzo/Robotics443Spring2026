@@ -68,7 +68,7 @@ int main(void){
             }else if(sw2){
                 while(SW2_Pressed()){}
                 Clock_Delay1ms(20);
-                Motor_Precision_CircleCW(1000, 40);
+                Motor_Precision_CircleCW(500, 40);
             }
         }
 
