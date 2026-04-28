@@ -1,6 +1,3 @@
-// main.c
-// CPEN 443 - Lab 10: 2D Navigation with Obstacle Avoidance
-// Robot state: (x, y, theta) -- position in mm, heading in degrees
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -13,13 +10,11 @@
 #include "Precision_Moves.h"
 #include "ADC14.h"
 
-// Physical constants -- match your Lab 9 measurements
 #define WHEEL_DIAMETER_MM   70.0
 #define ROBOT_WIDTH_MM      145.0
 #define STEPS_PER_REV       360.0
 #define MM_PER_STEP         (M_PI * WHEEL_DIAMETER_MM / STEPS_PER_REV)
 
-// Navigation tuning -- untouched
 #define NAV_RPM             750
 #define TURN_PWM            2500
 #define PAUSE_MS            80
@@ -27,31 +22,20 @@
 #define ARRIVE_DIST_MM      20
 #define FWD_PAST_MM         300
 
-// Sensor thresholds -- tune if needed
-// Motors must be stopped before reading for clean ADC values
 #define ADC_WALL_THRESHOLD  8900    // center sensor: above this = wall ahead
 #define ADC_GAP_THRESHOLD   5000    // right sensor: below this = open gap
 
-// How far to creep sideways per step while clearing an obstacle
 #define SIDE_STEP_MM        50
 #define SIDE_STEP_MAX_MM    400
 
-// Target -- update before each run per instructor
 #define START_HEADING_DEG   0.0
 #define TARGET_X_MM         0.0
 #define TARGET_Y_MM         600.0
 
-// Robot state
 static double g_x       = 0.0;
 static double g_y       = 0.0;
 static double g_heading = 0.0;
 
-// ---------------------------------------------------------------------------
-// Sensor reading -- always call while motors are stopped
-// Motors produce PWM noise that corrupts ADC while running
-// Two averaged reads reject single-sample glitches
-// ch17 = right, ch14 = center, ch16 = left
-// ---------------------------------------------------------------------------
 static void check_sensors(int *wall, int *gap_right){
     uint32_t l1, c1, r1, l2, c2, r2;
     ADC_In17_14_16(&r1, &c1, &l1);
@@ -60,9 +44,6 @@ static void check_sensors(int *wall, int *gap_right){
     *gap_right = ((r1 + r2) / 2 < ADC_GAP_THRESHOLD);
 }
 
-// ---------------------------------------------------------------------------
-// Helpers -- untouched
-// ---------------------------------------------------------------------------
 static int32_t mm_to_steps(double mm){
     return (int32_t)((mm / MM_PER_STEP) + 0.5);
 }
@@ -78,9 +59,6 @@ static double normalize_angle(double a){
     return a;
 }
 
-// ---------------------------------------------------------------------------
-// Movement primitives -- untouched
-// ---------------------------------------------------------------------------
 static void drive_forward(double dist_mm){
     if(dist_mm <= 0.0) return;
 
@@ -121,26 +99,16 @@ static void turn_to_heading(double target_deg){
         pivot_right(-delta);
 }
 
-// ---------------------------------------------------------------------------
-// Obstacle avoidance
-// Called while stopped so sensor reads are clean.
-// Turns toward the open side, creeps forward until front clears,
-// then pushes past the edge. navigate_to() re-aims at the original
-// target automatically when it loops back.
-// ---------------------------------------------------------------------------
 static void avoid_obstacle(void){
     int wall, gap_right;
     double stepped = 0.0;
 
     check_sensors(&wall, &gap_right);
 
-    // Turn toward open side
     if(gap_right)
         pivot_right(90.0);
     else
         pivot_left(90.0);
-
-    // Creep forward until front is clear or limit reached
     while(stepped < SIDE_STEP_MAX_MM){
         check_sensors(&wall, &gap_right);
         if(!wall) break;
@@ -148,18 +116,9 @@ static void avoid_obstacle(void){
         stepped += SIDE_STEP_MM;
     }
 
-    // Extra push to fully clear the object edge
     drive_forward(FWD_PAST_MM);
 
-    // navigate_to() will re-aim at target from updated (g_x, g_y, g_heading)
 }
-
-// ---------------------------------------------------------------------------
-// Core navigation -- movement logic untouched
-// Sensors checked only while stopped so ADC reads are clean.
-// After avoidance the loop recalculates heading and distance to target
-// and resumes the same smooth full-distance drive.
-// ---------------------------------------------------------------------------
 static void navigate_to(double tx, double ty){
     int wall, gap_right;
 
@@ -172,14 +131,12 @@ static void navigate_to(double tx, double ty){
 
         turn_to_heading(atan2(dy, dx) * 180.0 / M_PI);
 
-        // Read sensors while stopped -- clean ADC
         check_sensors(&wall, &gap_right);
         if(wall){
             avoid_obstacle();
-            continue;   // loop recalculates and re-aims
+            continue;   
         }
 
-        // Drive the full remaining distance in one smooth move -- untouched
         drive_forward(dist);
     }
 
