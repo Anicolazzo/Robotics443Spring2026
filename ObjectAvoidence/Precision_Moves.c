@@ -53,7 +53,9 @@ static int sensor_wall_detected(void){
     ADC_In17_14_16(&r1,&c1,&l1);
     ADC_In17_14_16(&r2,&c2,&l2);
     uint32_t center = (c1 > c2) ? c1 : c2;
-    return (center > 8900);
+    uint32_t right = (r1 > r2) ? r1 : r2;
+    uint32_t Left = (l1 > l2) ? l1 : l2;
+    return (center > 8900 | Left > 8900 | right > 8900);
 }
 
 

@@ -26,6 +26,7 @@ Precision_Moves.obj: ../Clock.h
 Precision_Moves.obj: ../Motor.h
 Precision_Moves.obj: ../Tachometer.h
 Precision_Moves.obj: ../Precision_Moves.h
+Precision_Moves.obj: ../ADC14.h
 
 ../Precision_Moves.c:
 
@@ -78,4 +79,6 @@ C:/ti/ccs1281/ccs/ccs_base/arm/include/system_msp432p401r.h:
 ../Tachometer.h:
 
 ../Precision_Moves.h:
+
+../ADC14.h:
 

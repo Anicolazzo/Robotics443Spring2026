@@ -32,7 +32,7 @@ extern int Motor_Forward_Obstacle;
 
 #define START_HEADING_DEG   0.0
 #define TARGET_X_MM         0.0
-#define TARGET_Y_MM         600.0
+#define TARGET_Y_MM         1830.0
 
 static double g_x       = 0.0;
 static double g_y       = 0.0;
@@ -42,7 +42,7 @@ static void check_sensors(int *wall, int *gap_right){
     uint32_t l1, c1, r1, l2, c2, r2;
     ADC_In17_14_16(&r1, &c1, &l1);
     ADC_In17_14_16(&r2, &c2, &l2);
-    *wall      = ((c1 + c2) / 2 > ADC_WALL_THRESHOLD);
+    *wall      = (((c1 + c2) / 2 > ADC_WALL_THRESHOLD)) | (((r1 + r2) / 2 > ADC_WALL_THRESHOLD)) | (((l1 + l2) / 2 > ADC_WALL_THRESHOLD)) ;
     *gap_right = ((r1 + r2) / 2 < ADC_GAP_THRESHOLD);
 }
 
