@@ -1,4 +1,5 @@
 
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
@@ -9,6 +10,8 @@
 #include "Tachometer.h"
 #include "Precision_Moves.h"
 #include "ADC14.h"
+
+extern int Motor_Forward_Obstacle;
 
 #define WHEEL_DIAMETER_MM   70.0
 #define ROBOT_WIDTH_MM      145.0
@@ -22,9 +25,8 @@
 #define ARRIVE_DIST_MM      20
 #define FWD_PAST_MM         300
 
-#define ADC_WALL_THRESHOLD  8900    // center sensor: above this = wall ahead
-#define ADC_GAP_THRESHOLD   5000    // right sensor: below this = open gap
-
+#define ADC_WALL_THRESHOLD  8900    
+#define ADC_GAP_THRESHOLD   5000    
 #define SIDE_STEP_MM        50
 #define SIDE_STEP_MAX_MM    400
 
@@ -105,10 +107,13 @@ static void avoid_obstacle(void){
 
     check_sensors(&wall, &gap_right);
 
+    // Turn toward open side
     if(gap_right)
         pivot_right(90.0);
     else
         pivot_left(90.0);
+
+    // Creep forward until front is clear or limit reached
     while(stepped < SIDE_STEP_MAX_MM){
         check_sensors(&wall, &gap_right);
         if(!wall) break;
@@ -116,9 +121,12 @@ static void avoid_obstacle(void){
         stepped += SIDE_STEP_MM;
     }
 
+    // Extra push to fully clear the object edge
     drive_forward(FWD_PAST_MM);
 
+    // navigate_to() will re-aim at target from updated (g_x, g_y, g_heading)
 }
+
 static void navigate_to(double tx, double ty){
     int wall, gap_right;
 
@@ -131,13 +139,20 @@ static void navigate_to(double tx, double ty){
 
         turn_to_heading(atan2(dy, dx) * 180.0 / M_PI);
 
+        // Read sensors while stopped -- clean ADC
         check_sensors(&wall, &gap_right);
         if(wall){
             avoid_obstacle();
-            continue;   
+            continue;
         }
 
+        // Drive full distance -- Motor_Forward_RPM aborts if wall appears mid-move
+        Motor_Forward_Obstacle = 0;
         drive_forward(dist);
+
+        if(Motor_Forward_Obstacle){
+            avoid_obstacle();
+        }
     }
 
     Motor_Stop();

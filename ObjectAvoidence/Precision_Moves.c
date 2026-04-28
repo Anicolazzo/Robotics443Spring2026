@@ -6,6 +6,7 @@
 #include "Motor.h"
 #include "Tachometer.h"
 #include "Precision_Moves.h"
+#include "ADC14.h"
 
 #define PI                     3.141592653589793
 #define WHEEL_DIAMETER_CM      7.0
@@ -40,6 +41,20 @@
 #define MIN_STARTUP_MS         15     /* never delay less than this at startup */
 #define MIN_START_PWM          1400   /* floor for the scaled start PWM        */
 #define SLAVE_ABS_MIN_PWM      800    /* absolute floor for inner-wheel PWM    */
+
+/* Set to 1 if Motor_Forward_RPM stopped early due to obstacle.
+   Read in main.c via: extern int Motor_Forward_Obstacle;          */
+int Motor_Forward_Obstacle = 0;
+
+/* Returns 1 if center sensor sees a wall. Takes max of two reads
+   to lean toward detection while motors are running.              */
+static int sensor_wall_detected(void){
+    uint32_t l1,c1,r1,l2,c2,r2;
+    ADC_In17_14_16(&r1,&c1,&l1);
+    ADC_In17_14_16(&r2,&c2,&l2);
+    uint32_t center = (c1 > c2) ? c1 : c2;
+    return (center > 8900);
+}
 
 
 static int32_t DistanceToSteps(double distance_cm){
@@ -193,6 +208,9 @@ void Motor_Forward_RPM(uint16_t leftRPM, uint16_t rightRPM,
     int32_t errAvg, integAvg = 0;
     int32_t phaseError, phaseInteg = 0, phaseCorrection;
     int32_t basePWM, leftPWM, rightPWM;
+    int iterCount = 0;
+
+    Motor_Forward_Obstacle = 0;
 
     if(desiredLSteps <= 0 || desiredRSteps <= 0) return;
     if(leftRPM == 0 || rightRPM == 0) return;
@@ -221,6 +239,18 @@ void Motor_Forward_RPM(uint16_t leftRPM, uint16_t rightRPM,
     while(1){
         Clock_Delay1ms(RPM_SAMPLE_MS);
 
+        /* Poll sensor every 3 iterations (~180ms). If wall detected,
+           stop immediately and set flag for main.c to handle.        */
+        iterCount++;
+        if(iterCount >= 3){
+            iterCount = 0;
+            if(sensor_wall_detected()){
+                Motor_Stop();
+                Motor_Forward_Obstacle = 1;
+                return;
+            }
+        }
+
         Tachometer_Get_SpaceTime(&curLSteps, &curRSteps, &curLTime, &curRTime);
 
         movedL = curLSteps - startLSteps;
@@ -245,11 +275,6 @@ void Motor_Forward_RPM(uint16_t leftRPM, uint16_t rightRPM,
         actualRRPM = (deltaRSteps == 0 || deltaRTime == 0) ? 0
             : (uint16_t)(((uint64_t)deltaRSteps * 20000000ULL) / deltaRTime);
 
-        /* If either wheel has no valid reading this cycle (encoder edge has
-           not arrived yet), skip the control update entirely and keep the
-           last PWM values. Without this guard a zero reading makes errAvg
-           equal to the full target RPM, winds the integrator to its limit
-           in one shot, and causes the random mid-move stall. */
         if(actualLRPM == 0 || actualRRPM == 0){
             prevLSteps = curLSteps;
             prevRSteps = curRSteps;
@@ -258,7 +283,6 @@ void Motor_Forward_RPM(uint16_t leftRPM, uint16_t rightRPM,
             continue;
         }
 
-        /* Single PI on average RPM controls base speed */
         avgActualRPM = (actualLRPM + actualRRPM) / 2;
         errAvg = (int32_t)avgTargetRPM - (int32_t)avgActualRPM;
 
@@ -270,7 +294,6 @@ void Motor_Forward_RPM(uint16_t leftRPM, uint16_t rightRPM,
         if(basePWM < MASTER_MIN_PWM) basePWM = MASTER_MIN_PWM;
         if(basePWM > MAX_PWM)        basePWM = MAX_PWM;
 
-        /* PI phase correction is the sole source of left/right differential */
         phaseError  = movedL - movedR;
         phaseInteg += phaseError;
         if(phaseInteg >  MASTER_INT_LIMIT) phaseInteg =  MASTER_INT_LIMIT;
