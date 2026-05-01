@@ -107,13 +107,11 @@ static void avoid_obstacle(void){
 
     check_sensors(&wall, &gap_right);
 
-    // Turn toward open side
     if(gap_right)
         pivot_right(90.0);
     else
         pivot_left(90.0);
 
-    // Creep forward until front is clear or limit reached
     while(stepped < SIDE_STEP_MAX_MM){
         check_sensors(&wall, &gap_right);
         if(!wall) break;
@@ -121,10 +119,8 @@ static void avoid_obstacle(void){
         stepped += SIDE_STEP_MM;
     }
 
-    // Extra push to fully clear the object edge
     drive_forward(FWD_PAST_MM);
 
-    // navigate_to() will re-aim at target from updated (g_x, g_y, g_heading)
 }
 
 static void navigate_to(double tx, double ty){
@@ -139,14 +135,12 @@ static void navigate_to(double tx, double ty){
 
         turn_to_heading(atan2(dy, dx) * 180.0 / M_PI);
 
-        // Read sensors while stopped -- clean ADC
         check_sensors(&wall, &gap_right);
         if(wall){
             avoid_obstacle();
             continue;
         }
 
-        // Drive full distance -- Motor_Forward_RPM aborts if wall appears mid-move
         Motor_Forward_Obstacle = 0;
         drive_forward(dist);
 

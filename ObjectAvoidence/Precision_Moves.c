@@ -42,12 +42,8 @@
 #define MIN_START_PWM          1400   /* floor for the scaled start PWM        */
 #define SLAVE_ABS_MIN_PWM      800    /* absolute floor for inner-wheel PWM    */
 
-/* Set to 1 if Motor_Forward_RPM stopped early due to obstacle.
-   Read in main.c via: extern int Motor_Forward_Obstacle;          */
 int Motor_Forward_Obstacle = 0;
 
-/* Returns 1 if center sensor sees a wall. Takes max of two reads
-   to lean toward detection while motors are running.              */
 static int sensor_wall_detected(void){
     uint32_t l1,c1,r1,l2,c2,r2;
     ADC_In17_14_16(&r1,&c1,&l1);
@@ -241,8 +237,6 @@ void Motor_Forward_RPM(uint16_t leftRPM, uint16_t rightRPM,
     while(1){
         Clock_Delay1ms(RPM_SAMPLE_MS);
 
-        /* Poll sensor every 3 iterations (~180ms). If wall detected,
-           stop immediately and set flag for main.c to handle.        */
         iterCount++;
         if(iterCount >= 3){
             iterCount = 0;
